@@ -1,0 +1,87 @@
+DATA:
+  NAME : 'TACoS'
+  DATA_PATH : ''
+  ANNO_PATH : 'data/tacos'
+  NUM_FRAME_PATH : 'data/tacos/tacos_num_frame.json'
+  VOCAB_PATH: 'data/tacos/words_vocab_tacos.json'
+  NUM_SAMPLE_FRAME: 160
+  NUM_MAX_WORD : 30
+  WINDOW_SIZE: 16
+  WORD_EMBEDDING_DIM : 300
+  VOCAB_SIZE: 1514
+  MLM_P: 0.15
+  INPUT_SIZE: 112
+  MEAN : [0.5, 0.5, 0.5]
+  STD : [0.5, 0.5, 0.5]
+
+DATA_LOADER:
+  NUM_WORKERS : 12
+  PIN_MEMORY : True
+
+
+TRAIN:
+  BATCH_SIZE : 80
+  CHECKPOINT_FILE_PATH : ""
+  EVAL_PERIOD : 1
+  SAVE_CHECKPOINT : False
+  CHECKPOINT_PERIOD : 18
+  MIXED_PRECISION : True
+
+TEST:
+  BATCH_SIZE : 60
+  IOU : [0.3, 0.5]
+  EVAL_TRAIN : False
+  CHECKPOINT_FILE_PATH: ""
+
+MODEL:
+  NAME : 'ClipByClip2'
+  MODEL_DIM : 512
+  NUM_LAYER : 6
+  DROPOUT : 0.1
+  DROPATT: 0.0
+  NUM_HEAD : 8
+  MEM_LEN: 32
+  C_MEM_LEN: 8
+  COMPRESS_TYPE: 'conv'
+  COMPRESS_RATE : 2
+  NUM_BUCKETS: 96
+  BIDIRECTIONAL: False
+
+
+LOSS:
+  NAME : 'anchor_free_loss'
+  BETA : 0.1
+  CLIP_GT_THRES: 0.8
+  LAMBDAS: [1.0, 1.0, 1.0, 1.0]
+
+SOLVER:
+  BASE_LR : 4e-5
+  LR_POLICY : "cosine"
+  MAX_EPOCH : 30
+  WEIGHT_DECAY : 0.0001
+  WARMUP_EPOCHS : 0
+  WARMUP_START_LR : 0.0
+  OPTIMIZING_METHOD : "adamw"
+  CLIP_GRAD_L2NORM : 1.0
+  COSINE_END_LR: 0.0
+  PARAM_GROUP_PREFIX: ["spa_enc.trm"]
+  PARAM_GROUP_LR: [0.01]
+  GRAD_ACC_STEP: 1
+
+DDP:
+  NUM_GPUS : 2
+  INIT_METHOD : "tcp://localhost:9999"
+  DIST_BACKEND : "nccl"
+  NUM_SHARDS : 1
+  SHARD_ID : 0
+
+TENSORBOARD:
+  ENABLE : False
+  PREDICTIONS_PATH : ""
+  LOG_DIR : ""
+
+RNG_SEED : 1
+OUTPUT_DIR : "."
+LOG_DIR : "log"
+LOG_PERIOD : 800
+COMMENT : ""
